@@ -4,89 +4,386 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10101b">
 <title>AI Talking Studio</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#10101b;color:white;font-family:Arial,sans-serif;padding:20px}
-header{text-align:center;padding:20px}
-h1{color:#d9b45b;font-size:27px}
-p{color:#bbb}
-.card{background:#1d1d2d;border:1px solid #38384d;border-radius:16px;padding:18px;margin:15px auto;max-width:520px}
-label{display:block;margin:15px 0 8px;color:#e5c779}
-input,textarea,select{width:100%;padding:13px;border-radius:9px;border:1px solid #555;background:#10101b;color:white;font-size:16px}
-textarea{height:110px;resize:vertical}
-button{width:100%;padding:14px;margin-top:12px;border:0;border-radius:10px;background:#c9a348;color:#151515;font-size:16px;font-weight:bold}
-button.secondary{background:#39394c;color:white}
-#preview{width:100%;max-height:280px;object-fit:contain;border-radius:12px;display:none;margin-top:15px}
-footer{text-align:center;color:#888;font-size:12px;padding:20px}
+
+body{
+ margin:0;
+ background:#10101b;
+ color:#fff;
+ font-family:Arial,sans-serif;
+ padding:15px;
+}
+
+header{
+ text-align:center;
+ padding:25px 10px;
+}
+
+.logo{
+ color:#d9b45b;
+ font-size:30px;
+ font-weight:bold;
+}
+
+header p{color:#bbb}
+
+.card{
+ background:#1d1d2d;
+ border:1px solid #38384d;
+ border-radius:16px;
+ padding:18px;
+ margin:15px auto;
+ max-width:600px;
+}
+
+h3{color:#e5c779}
+
+label{
+ display:block;
+ margin:17px 0 8px;
+ color:#e5c779;
+}
+
+input,textarea,select{
+ width:100%;
+ padding:13px;
+ border-radius:9px;
+ border:1px solid #555;
+ background:#10101b;
+ color:white;
+ font-size:16px;
+}
+
+textarea{
+ min-height:130px;
+ resize:vertical;
+ line-height:1.8;
+}
+
+button{
+ width:100%;
+ padding:14px;
+ margin-top:12px;
+ border:0;
+ border-radius:10px;
+ background:#c9a348;
+ color:#151515;
+ font-size:16px;
+ font-weight:bold;
+ cursor:pointer;
+}
+
+button.secondary{
+ background:#39394c;
+ color:white;
+}
+
+button:disabled{opacity:.5}
+
+#preview{
+ width:100%;
+ max-height:350px;
+ object-fit:contain;
+ border-radius:12px;
+ display:none;
+ margin-top:15px;
+}
+
+.preview-box{
+ background:#10101b;
+ border:1px dashed #c9a348;
+ border-radius:12px;
+ padding:12px;
+ text-align:center;
+}
+
+#status{
+ color:#e5c779;
+ line-height:1.8;
+}
+
+.counter{
+ color:#aaa;
+ font-size:13px;
+ text-align:left;
+ margin-top:7px;
+}
+
+.info{
+ color:#aaa;
+ font-size:13px;
+ line-height:1.8;
+}
+
+footer{
+ text-align:center;
+ color:#888;
+ font-size:12px;
+ padding:25px;
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>AI Talking Studio</h1>
-<p>استوديو الشخصيات الناطقة بالذكاء الاصطناعي</p>
+ <div class="logo">AI Talking Studio</div>
+ <p>استوديو الذكاء الاصطناعي الناطق</p>
+ <p>أنشئ شخصيتك الناطقة باللغة العربية</p>
 </header>
 
 <div class="card">
+
 <h3>🎬 إنشاء شخصية ناطقة</h3>
 
 <label>1. اختر صورة الشخصية</label>
 <input type="file" id="photo" accept="image/*">
-<img id="preview" alt="معاينة الصورة">
+
+<div class="preview-box">
+ <img id="preview" alt="صورة الشخصية">
+ <p id="empty">🖼️ ستظهر صورتك هنا</p>
+</div>
 
 <label>2. اكتب النص الذي تريد أن تنطقه الشخصية</label>
-<textarea id="script" placeholder="اكتب النص هنا باللغة العربية..."></textarea>
+<textarea id="script"
+ placeholder="اكتب النص هنا باللغة العربية..."></textarea>
+
+<div class="counter">
+ عدد الأحرف: <span id="count">0</span>
+</div>
 
 <label>3. اختر الصوت</label>
 <select id="voice">
-<option value="ar">الصوت العربي</option>
+ <option value="">تحميل الأصوات...</option>
 </select>
 
-<button onclick="speak()">🔊 استمع إلى النص</button>
-<button class="secondary" onclick="stopSpeech()">⏹ إيقاف الصوت</button>
+<label>4. سرعة الكلام</label>
+<select id="rate">
+ <option value="0.7">بطيء جداً</option>
+ <option value="0.85">بطيء</option>
+ <option value="1" selected>طبيعي</option>
+ <option value="1.15">سريع</option>
+ <option value="1.3">سريع جداً</option>
+</select>
+
+<label>5. نبرة الصوت</label>
+<select id="pitch">
+ <option value="0.8">منخفضة</option>
+ <option value="1" selected>طبيعية</option>
+ <option value="1.2">مرتفعة</option>
+</select>
+
+<button id="speakBtn" onclick="speak()">
+ 🔊 تشغيل صوت الشخصية
+</button>
+
+<button class="secondary" onclick="stopSpeech()">
+ ⏹ إيقاف الصوت
+</button>
+
+<button class="secondary" onclick="clearProject()">
+ 🗑️ مسح المشروع
+</button>
+
 </div>
 
 <div class="card">
+
 <h3>✨ معاينة المشروع</h3>
+
 <p id="status">اختر صورة واكتب النص للبدء.</p>
+
+<p class="info">
+يمكنك تجربة الأصوات العربية الموجودة في هاتفك.
+تعتمد الأصوات على دعم المتصفح ونظام التشغيل.
+</p>
+
 </div>
 
-<footer>AI Talking Studio © 2026</footer>
+<div class="card">
+
+<h3>🚀 مميزات الاستوديو</h3>
+
+<p>📷 رفع صورة الشخصية</p>
+<p>✍️ كتابة النص باللغة العربية</p>
+<p>🎙️ اختيار الأصوات المتاحة</p>
+<p>⚙️ التحكم في سرعة ونبرة الصوت</p>
+<p>🔊 تشغيل وإيقاف الكلام</p>
+<p>📱 تصميم متوافق مع الهاتف</p>
+
+</div>
+
+<footer>
+AI Talking Studio © 2026
+<br>
+استوديو التحدث بالذكاء الاصطناعي
+</footer>
 
 <script>
+
 const photo=document.getElementById('photo');
 const preview=document.getElementById('preview');
+const empty=document.getElementById('empty');
+const script=document.getElementById('script');
+const voiceSelect=document.getElementById('voice');
 const statusText=document.getElementById('status');
 
+let voices=[];
+
 photo.addEventListener('change',function(){
-if(this.files && this.files[0]){
-preview.src=URL.createObjectURL(this.files[0]);
-preview.style.display='block';
-statusText.textContent='تم اختيار الصورة بنجاح.';
-}
+
+ const file=this.files[0];
+
+ if(!file)return;
+
+ if(!file.type.startsWith('image/')){
+  alert('اختر ملف صورة صحيحاً');
+  return;
+ }
+
+ if(window.currentImageURL){
+  URL.revokeObjectURL(window.currentImageURL);
+ }
+
+ window.currentImageURL=URL.createObjectURL(file);
+ preview.src=window.currentImageURL;
+ preview.style.display='block';
+ empty.style.display='none';
+
+ statusText.textContent='تم اختيار الصورة بنجاح.';
+
 });
 
-function speak(){
-const text=document.getElementById('script').value.trim();
-if(!text){alert('اكتب النص أولاً');return;}
-if(!('speechSynthesis' in window)){
-alert('المتصفح لا يدعم تشغيل الصوت.');
-return;
+script.addEventListener('input',function(){
+ document.getElementById('count').textContent=this.value.length;
+});
+
+function loadVoices(){
+
+ if(!('speechSynthesis' in window)){
+  voiceSelect.innerHTML='<option>الصوت غير مدعوم</option>';
+  return;
+ }
+
+ voices=speechSynthesis.getVoices();
+
+ const arabic=voices.filter(v=>
+  v.lang.toLowerCase().startsWith('ar')
+ );
+
+ voiceSelect.innerHTML='';
+
+ if(arabic.length===0){
+  voiceSelect.innerHTML=
+   '<option value="">لا توجد أصوات عربية مثبتة</option>';
+  statusText.textContent=
+   'لم نعثر على صوت عربي. تحقق من أصوات هاتفك.';
+  return;
+ }
+
+ arabic.forEach((v,i)=>{
+  const option=document.createElement('option');
+  option.value=v.name;
+  option.textContent=v.name+' - '+v.lang;
+  voiceSelect.appendChild(option);
+ });
+
 }
-speechSynthesis.cancel();
-const msg=new SpeechSynthesisUtterance(text);
-msg.lang='ar';
-msg.rate=0.9;
-msg.pitch=1;
-msg.onstart=()=>statusText.textContent='جاري تشغيل الصوت...';
-msg.onend=()=>statusText.textContent='انتهى تشغيل الصوت.';
-speechSynthesis.speak(msg);
+
+if('speechSynthesis' in window){
+ loadVoices();
+ speechSynthesis.onvoiceschanged=loadVoices;
+}
+
+function speak(){
+
+ const text=script.value.trim();
+
+ if(!text){
+  alert('اكتب النص أولاً');
+  return;
+ }
+
+ if(!('speechSynthesis' in window)){
+  alert('المتصفح لا يدعم تشغيل الصوت');
+  return;
+ }
+
+ if(speechSynthesis.getVoices().length===0){
+  loadVoices();
+ }
+
+ speechSynthesis.cancel();
+
+ const msg=new SpeechSynthesisUtterance(text);
+
+ const selected=voices.find(v=>
+  v.name===voiceSelect.value
+ );
+
+ if(selected){
+  msg.voice=selected;
+ }
+
+ msg.lang=selected ? selected.lang : 'ar';
+ msg.rate=parseFloat(document.getElementById('rate').value);
+ msg.pitch=parseFloat(document.getElementById('pitch').value);
+
+ msg.onstart=()=>{
+  statusText.textContent='🔊 جاري تشغيل صوت الشخصية...';
+ };
+
+ msg.onend=()=>{
+  statusText.textContent='✅ انتهى تشغيل الصوت.';
+ };
+
+ msg.onerror=(event)=>{
+  if(event.error!=='canceled'){
+   statusText.textContent='حدث خطأ أثناء تشغيل الصوت.';
+  }
+ };
+
+ speechSynthesis.speak(msg);
+
 }
 
 function stopSpeech(){
-speechSynthesis.cancel();
-statusText.textContent='تم إيقاف الصوت.';
+
+ if('speechSynthesis' in window){
+  speechSynthesis.cancel();
+ }
+
+ statusText.textContent='تم إيقاف الصوت.';
+
 }
+
+function clearProject(){
+
+ stopSpeech();
+
+ script.value='';
+ photo.value='';
+
+ preview.removeAttribute('src');
+ preview.style.display='none';
+ empty.style.display='block';
+
+ document.getElementById('count').textContent='0';
+
+ statusText.textContent='تم مسح المشروع. ابدأ من جديد.';
+
+ if(window.currentImageURL){
+  URL.revokeObjectURL(window.currentImageURL);
+  window.currentImageURL=null;
+ }
+
+}
+
 </script>
+
 </body>
 </html>
