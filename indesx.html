@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Talking Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#10101b;color:white;font-family:Arial,sans-serif;padding:20px}
+header{text-align:center;padding:20px}
+h1{color:#d9b45b;font-size:27px}
+p{color:#bbb}
+.card{background:#1d1d2d;border:1px solid #38384d;border-radius:16px;padding:18px;margin:15px auto;max-width:520px}
+label{display:block;margin:15px 0 8px;color:#e5c779}
+input,textarea,select{width:100%;padding:13px;border-radius:9px;border:1px solid #555;background:#10101b;color:white;font-size:16px}
+textarea{height:110px;resize:vertical}
+button{width:100%;padding:14px;margin-top:12px;border:0;border-radius:10px;background:#c9a348;color:#151515;font-size:16px;font-weight:bold}
+button.secondary{background:#39394c;color:white}
+#preview{width:100%;max-height:280px;object-fit:contain;border-radius:12px;display:none;margin-top:15px}
+footer{text-align:center;color:#888;font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>AI Talking Studio</h1>
+<p>استوديو الشخصيات الناطقة بالذكاء الاصطناعي</p>
+</header>
+
+<div class="card">
+<h3>🎬 إنشاء شخصية ناطقة</h3>
+
+<label>1. اختر صورة الشخصية</label>
+<input type="file" id="photo" accept="image/*">
+<img id="preview" alt="معاينة الصورة">
+
+<label>2. اكتب النص الذي تريد أن تنطقه الشخصية</label>
+<textarea id="script" placeholder="اكتب النص هنا باللغة العربية..."></textarea>
+
+<label>3. اختر الصوت</label>
+<select id="voice">
+<option value="ar">الصوت العربي</option>
+</select>
+
+<button onclick="speak()">🔊 استمع إلى النص</button>
+<button class="secondary" onclick="stopSpeech()">⏹ إيقاف الصوت</button>
+</div>
+
+<div class="card">
+<h3>✨ معاينة المشروع</h3>
+<p id="status">اختر صورة واكتب النص للبدء.</p>
+</div>
+
+<footer>AI Talking Studio © 2026</footer>
+
+<script>
+const photo=document.getElementById('photo');
+const preview=document.getElementById('preview');
+const statusText=document.getElementById('status');
+
+photo.addEventListener('change',function(){
+if(this.files && this.files[0]){
+preview.src=URL.createObjectURL(this.files[0]);
+preview.style.display='block';
+statusText.textContent='تم اختيار الصورة بنجاح.';
+}
+});
+
+function speak(){
+const text=document.getElementById('script').value.trim();
+if(!text){alert('اكتب النص أولاً');return;}
+if(!('speechSynthesis' in window)){
+alert('المتصفح لا يدعم تشغيل الصوت.');
+return;
+}
+speechSynthesis.cancel();
+const msg=new SpeechSynthesisUtterance(text);
+msg.lang='ar';
+msg.rate=0.9;
+msg.pitch=1;
+msg.onstart=()=>statusText.textContent='جاري تشغيل الصوت...';
+msg.onend=()=>statusText.textContent='انتهى تشغيل الصوت.';
+speechSynthesis.speak(msg);
+}
+
+function stopSpeech(){
+speechSynthesis.cancel();
+statusText.textContent='تم إيقاف الصوت.';
+}
+</script>
+</body>
+</html>
